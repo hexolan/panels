@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+      - name: user-service
+        image: panels/user-service
+        ports:
+          - containerPort: 9090
+        env:
+          - name: MONGODB_URI
+            valueFrom:
+              configMapKeyRef:
+                name: user-service-config
+                key: mongodb-uri
+          - name: KAFKA_BROKERS
+            valueFrom:
+              configMapKeyRef:
+                name: panels-shared-config
+                key: kafka-brokers
+        resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+spec:
+  selectors:
+    app: user-service
+  type: ClusterIP
+  ports:
+  - name: grpc
+    port: 9090
+    targetPort: 9090
+    protocol: TCP

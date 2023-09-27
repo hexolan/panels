@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: panels-shared-config
+data:
+  kafka-brokers: kafka:19092
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-service-config
+data:
+  auth-service-address: auth-service:9090
+  comment-service-address: comment-service:9090
+  panel-service-address: panel-service:9090
+  post-service-address: post-service:9090
+  user-service-address: user-service:9090
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-service-config
+data:
+  password-pepper: 4d0c18c368489d4c0b48c497efb1d6b3
+  postgres-host: host.docker.internal:5434
+  postgres-user: postgres
+  postgres-pass: postgres
+  postgres-database: postgres
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: comment-service-config
+data:
+  postgres-host: host.docker.internal:5435
+  postgres-user: postgres
+  postgres-pass: postgres
+  postgres-database: postgres
+  redis-host: host.docker.internal:6381
+  redis-pass: redis
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: panel-service-config
+data:
+  postgres-host: host.docker.internal:5432
+  postgres-user: postgres
+  postgres-pass: postgres
+  postgres-database: postgres
+  redis-host: host.docker.internal:6379
+  redis-pass: redis
+  log-level: info
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: post-service-config
+data:
+  postgres-host: host.docker.internal:5433
+  postgres-user: postgres
+  postgres-pass: postgres
+  postgres-database: postgres
+  redis-host: host.docker.internal:6380
+  redis-pass: redis
+  log-level: info
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-service-config
+data:
+  mongodb-uri: mongodb://mongo:mongo@host.docker.internal:27017/

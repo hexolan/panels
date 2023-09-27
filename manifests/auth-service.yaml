@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+      - name: auth-service
+        image: panels/auth-service
+        ports:
+          - containerPort: 9090
+        env:
+          - name: JWT_PUBLIC_KEY
+            valueFrom:
+              secretKeyRef:
+                name: panels-jwtkeys-secret
+                key: public-key
+          - name: JWT_PRIVATE_KEY
+            valueFrom:
+              secretKeyRef:
+                name: panels-jwtkeys-secret
+                key: private-key
+          - name: PASSWORD_PEPPER
+            valueFrom:
+              configMapKeyRef:
+                name: auth-service-config
+                key: password-pepper
+          - name: POSTGRES_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: auth-service-config
+                key: postgres-host
+          - name: POSTGRES_USER
+            valueFrom:
+              configMapKeyRef:
+                name: auth-service-config
+                key: postgres-user
+          - name: POSTGRES_PASS
+            valueFrom:
+              configMapKeyRef:
+                name: auth-service-config
+                key: postgres-pass
+          - name: POSTGRES_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: auth-service-config
+                key: postgres-database
+          - name: KAFKA_BROKERS
+            valueFrom:
+              configMapKeyRef:
+                name: panels-shared-config
+                key: kafka-brokers
+        resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+spec:
+  selectors:
+    app: auth-service
+  type: ClusterIP
+  ports:
+  - name: grpc
+    port: 9090
+    targetPort: 9090
+    protocol: TCP

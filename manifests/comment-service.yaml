@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comment-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: comment-service
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: comment-service
+    spec:
+      containers:
+      - name: comment-service
+        image: panels/comment-service
+        ports:
+          - containerPort: 9090
+        env:
+          - name: POSTGRES_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: comment-service-config
+                key: postgres-host
+          - name: POSTGRES_USER
+            valueFrom:
+              configMapKeyRef:
+                name: comment-service-config
+                key: postgres-user
+          - name: POSTGRES_PASS
+            valueFrom:
+              configMapKeyRef:
+                name: comment-service-config
+                key: postgres-pass
+          - name: POSTGRES_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: comment-service-config
+                key: postgres-database
+          - name: REDIS_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: comment-service-config
+                key: redis-host
+          - name: REDIS_PASS
+            valueFrom:
+              configMapKeyRef:
+                name: comment-service-config
+                key: redis-pass
+          - name: KAFKA_BROKERS
+            valueFrom:
+              configMapKeyRef:
+                name: panels-shared-config
+                key: kafka-brokers
+        resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comment-service
+spec:
+  selectors:
+    app: comment-service
+  type: ClusterIP
+  ports:
+  - name: grpc
+    port: 9090
+    targetPort: 9090
+    protocol: TCP

@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway-service
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: gateway-service
+    spec:
+      containers:
+      - name: gateway-service
+        image: panels/gateway-service
+        ports:
+          - containerPort: 3000
+        env:
+          - name: JWT_PUBLIC_KEY
+            valueFrom:
+              secretKeyRef:
+                name: panels-jwtkeys-secret
+                key: public-key
+          - name: AUTH_SVC_ADDR
+            valueFrom:
+              configMapKeyRef:
+                name: gateway-service-config
+                key: auth-service-address
+          - name: COMMENT_SVC_ADDR
+            valueFrom:
+              configMapKeyRef:
+                name: gateway-service-config
+                key: comment-service-address
+          - name: PANEL_SVC_ADDR
+            valueFrom:
+              configMapKeyRef:
+                name: gateway-service-config
+                key: panel-service-address
+          - name: POST_SVC_ADDR
+            valueFrom:
+              configMapKeyRef:
+                name: gateway-service-config
+                key: post-service-address
+          - name: USER_SVC_ADDR
+            valueFrom:
+              configMapKeyRef:
+                name: gateway-service-config
+                key: user-service-address
+        resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-service
+spec:
+  selectors:
+    app: gateway-service
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 3000
+    targetPort: 3000
+    protocol: TCP

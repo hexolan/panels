@@ -1,0 +1,46 @@
+apiVersion: skaffold/v3
+kind: Config
+metadata:
+  name: panels
+build:
+  artifacts:
+    - image: panels/auth-service
+      context: services/auth-service
+      docker:
+        dockerfile: Dockerfile
+    - image: panels/comment-service
+      context: services/comment-service
+      docker:
+        dockerfile: Dockerfile
+    - image: panels/frontend
+      context: services/frontend
+      docker:
+        dockerfile: Dockerfile
+    - image: panels/gateway-service
+      context: services/gateway-service
+      docker:
+        dockerfile: Dockerfile
+    - image: panels/panel-service
+      context: services/panel-service
+      docker:
+        dockerfile: Dockerfile
+    - image: panels/post-service
+      context: services/post-service
+      docker:
+        dockerfile: Dockerfile
+    - image: panels/user-service
+      context: services/user-service
+      docker:
+        dockerfile: Dockerfile
+manifests:
+  rawYaml:
+    - ./manifests/jwtkeys-secret.yaml
+    - ./manifests/services-configmap.yaml
+    - ./manifests/kafka.yaml
+    - ./manifests/frontend.yaml
+    - ./manifests/auth-service.yaml
+    - ./manifests/gateway-service.yaml
+    - ./manifests/panel-service.yaml
+    - ./manifests/post-service.yaml
+    - ./manifests/user-service.yaml
+    - ./manifests/comment-service.yaml

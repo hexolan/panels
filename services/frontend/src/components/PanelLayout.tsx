@@ -6,7 +6,7 @@ import LoadingBar from '../components/LoadingBar'
 import { useAppSelector } from '../app/hooks'
 import { useGetPanelByNameQuery } from '../app/api/panels'
 import type { Panel } from '../app/types/common'
-import type { ErrorResponse } from '../app/types/api'
+import type { QueryError, ErrorResponse } from '../app/types/api'
 
 export type PanelContext = {
   panel: Panel;
@@ -63,8 +63,8 @@ function PanelLayout() {
   } else if (!data) {
     if (!error) {
       throw Error('Unknown error occured')
-    } else if ('data' in error) {
-      const errResponse = error.data as ErrorResponse
+    } else if ((error as QueryError).data) {
+      const errResponse = (error as QueryError).data as ErrorResponse
       if (errResponse.msg) {
         throw Error(errResponse.msg)
       } else {

@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+      - name: kafka
+        image: bitnami/kafka:3.4
+        ports:
+        - containerPort: 19093
+        - containerPort: 19092
+        - containerPort: 9092
+        env:
+        - name: KAFKA_CFG_ADVERTISED_LISTENERS
+          value: INTERNAL://kafka:19092,EXTERNAL://localhost:9092
+        - name: KAFKA_CFG_CONTROLLER_LISTENER_NAMES
+          value: CONTROLLER
+        - name: KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
+          value: 0@kafka:19093
+        - name: KAFKA_CFG_INTER_BROKER_LISTENER_NAME
+          value: INTERNAL
+        - name: KAFKA_CFG_LISTENERS
+          value: CONTROLLER://:19093,INTERNAL://:19092,EXTERNAL://:9092
+        - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
+          value: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+        - name: KAFKA_CFG_NODE_ID
+          value: "0"
+        - name: KAFKA_CFG_PROCESS_ROLES
+          value: controller,broker
+        - name: KAFKA_KRAFT_CLUSTER_ID
+          value: g9rbXaCaSGqB3CURPeEvTA
+        resources: {}
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+spec:
+  selectors:
+    app: kafka
+  type: ClusterIP
+  ports:
+  - name: kafka
+    port: 19092
+    targetPort: 19092
+    protocol: TCP

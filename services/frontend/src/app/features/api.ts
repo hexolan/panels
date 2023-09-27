@@ -3,6 +3,7 @@ import type { BaseQueryFn } from '@reduxjs/toolkit/query'
 
 import { setUnauthed } from './auth'
 import type { RootState } from '../store'
+import type { QueryError } from '../types/api';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL,
@@ -18,7 +19,8 @@ const baseQuery = fetchBaseQuery({
   }
 })
 
-const wrappedBaseQuery: BaseQueryFn = async (args, api, extraOptions) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const wrappedBaseQuery: BaseQueryFn<any, unknown, QueryError> = async (args, api, extraOptions) => {
   const result = await baseQuery(args, api, extraOptions)
   if ((api.getState() as RootState).auth.accessToken && result?.error?.status === 403) {
     api.dispatch(setUnauthed())

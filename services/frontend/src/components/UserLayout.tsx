@@ -7,7 +7,7 @@ import LoadingBar from './LoadingBar'
 import { User } from '../app/types/common'
 import { useAppSelector } from '../app/hooks'
 import { useGetUserByNameQuery } from '../app/api/users'
-import type { ErrorResponse } from '../app/types/api'
+import type { ErrorResponse, QueryError } from '../app/types/api'
 
 export type UserContext = {
   user: User
@@ -40,8 +40,8 @@ function UserLayout() {
   } else if (!data) {
     if (!error) {
       throw Error('Unknown error occured')
-    } else if ('data' in error) {
-      const errResponse = error.data as ErrorResponse
+    } else if ((error as QueryError).data) {
+      const errResponse = (error as QueryError).data as ErrorResponse
       if (errResponse.msg) {
         throw Error(errResponse.msg)
       } else {

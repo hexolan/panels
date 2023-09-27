@@ -1,3 +1,9 @@
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query'
+
+export type QueryError = FetchBaseQueryError | {
+  data: ErrorResponse;
+}
+
 export type RawResponse = {
   status: string;
   msg?: string;
