@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package panels.auth.v1;
+
+import "google/protobuf/empty.proto";
+
+service AuthService {
+    rpc AuthWithPassword(PasswordAuthRequest) returns (AuthToken) {}
+
+    rpc SetPasswordAuth(SetPasswordAuthMethod) returns (google.protobuf.Empty) {}
+    rpc DeletePasswordAuth(DeletePasswordAuthMethod) returns (google.protobuf.Empty) {}
+}
+
+message SetPasswordAuthMethod {
+    string user_id = 1; // External Ref: User Id
+    string password = 2;
+}
+
+message DeletePasswordAuthMethod {
+    string user_id = 1; // External Ref: User Id
+}
+
+message PasswordAuthRequest {
+    string user_id = 1; // External Ref: User Id
+    string password = 2;
+}
+
+message AuthToken {
+    string token_type = 1;
+    string access_token = 2;
+    string refresh_token = 3;
+    int64 expires_in = 4;
+}

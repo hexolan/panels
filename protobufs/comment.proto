@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package panels.comment.v1;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+service CommentService {
+    rpc CreateComment(CreateCommentRequest) returns (Comment) {}
+    rpc UpdateComment(UpdateCommentRequest) returns (Comment) {}
+    rpc DeleteComment(DeleteCommentRequest) returns (google.protobuf.Empty) {}
+    
+    rpc GetComment(GetCommentRequest) returns (Comment) {}
+    rpc GetPostComments(GetPostCommentsRequest) returns (PostComments) {}
+}
+
+message Comment {
+    string id = 1;
+
+    string post_id = 2; // External Ref: Post Id
+    string author_id = 3; // External Ref: User Id
+
+    string message = 4;
+
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
+}
+
+message CommentMutable {
+    string message = 1;
+}
+
+message CreateCommentRequest {
+    string post_id = 1; // External Ref: Post Id
+    string author_id = 2; // External Ref: User Id
+    CommentMutable data = 3;
+}
+
+message UpdateCommentRequest {
+    string id = 1;
+    CommentMutable data = 2;
+}
+
+message DeleteCommentRequest {
+    string id = 1;
+}
+
+message GetCommentRequest {
+    string id = 1;
+}
+
+message GetPostCommentsRequest {
+    string post_id = 1;
+}
+
+message PostComments {
+    repeated Comment comments = 1;
+}
+
+// Kafka Event Schema
+message CommentEvent {
+    string type = 1;
+    Comment data = 2;
+}

@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+package panels.post.v1;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+service PostService {
+    rpc CreatePost(CreatePostRequest) returns (Post) {}
+
+    rpc GetPost(GetPostRequest) returns (Post) {}
+    rpc GetPanelPost(GetPanelPostRequest) returns (Post) {}
+
+    rpc UpdatePost(UpdatePostRequest) returns (Post) {}
+
+    rpc DeletePost(DeletePostRequest) returns (google.protobuf.Empty) {}
+
+    rpc GetFeedPosts(GetFeedPostsRequest) returns (FeedPosts) {}
+    rpc GetUserPosts(GetUserPostsRequest) returns (UserPosts) {}
+    rpc GetPanelPosts(GetPanelPostsRequest) returns (PanelPosts) {}
+}
+
+message Post {
+    string id = 1;
+
+    string panel_id = 2; // External Ref: Panel Id
+    string author_id = 3; // External Ref: User Id
+
+    string title = 4;
+    string content = 5;
+
+    google.protobuf.Timestamp created_at = 6;
+    google.protobuf.Timestamp updated_at = 7;
+}
+
+message PostMutable {
+    optional string title = 1;
+    optional string content = 2;
+}
+
+message CreatePostRequest {
+    string panel_id = 1; // External Ref: Panel Id
+    string user_id = 2; // External Ref: User Id
+    PostMutable data = 3;
+}
+
+message GetPostRequest {
+    string id = 1;
+}
+
+message GetPanelPostRequest {
+    string panel_id = 1; // External Ref: Panel Id
+    string id = 2;
+}
+
+message UpdatePostRequest {
+    string id = 1;
+    PostMutable data = 2;
+}
+
+message DeletePostRequest {
+    string id = 1;
+}
+
+message GetFeedPostsRequest {
+
+}
+
+message FeedPosts {
+    repeated Post posts = 1;
+}
+
+message GetUserPostsRequest {
+    string user_id = 1; // External Ref: User Id
+}
+
+message UserPosts {
+    repeated Post posts = 1;
+}
+
+message GetPanelPostsRequest {
+    string panel_id = 1; // External Ref: Panel Id
+}
+
+message PanelPosts {
+    repeated Post posts = 1;
+}
+
+// Kafka Event Schema
+message PostEvent {
+    string type = 1;
+    Post data = 2;
+}

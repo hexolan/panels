@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package panels.user.v1;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+service UserService {
+    rpc CreateUser(CreateUserRequest) returns (User) {}
+
+    rpc GetUser(GetUserByIdRequest) returns (User) {}
+    rpc GetUserByName(GetUserByNameRequest) returns (User) {}
+
+    rpc UpdateUser(UpdateUserByIdRequest) returns (User) {}
+    rpc UpdateUserByName(UpdateUserByNameRequest) returns (User) {}
+
+    rpc DeleteUser(DeleteUserByIdRequest) returns (google.protobuf.Empty) {}
+    rpc DeleteUserByName(DeleteUserByNameRequest) returns (google.protobuf.Empty) {}
+}
+
+message User {
+    string id = 1;
+    string username = 2;
+    bool is_admin = 3;
+
+    google.protobuf.Timestamp created_at = 4;
+    google.protobuf.Timestamp updated_at = 5;
+}
+
+message UserMutable {
+    optional string username = 1;
+}
+
+message CreateUserRequest {
+    UserMutable data = 1;
+}
+
+message GetUserByIdRequest {
+    string id = 1;
+}
+
+message GetUserByNameRequest {
+    string username = 1;
+}
+
+message UpdateUserByIdRequest {
+    string id = 1;
+    UserMutable data = 2;
+}
+
+message UpdateUserByNameRequest {
+    string username = 1;
+    UserMutable data = 2;
+}
+
+message DeleteUserByIdRequest {
+    string id = 1;
+}
+
+message DeleteUserByNameRequest {
+    string username = 1;
+}
+
+// Kafka Event Schema
+message UserEvent {
+    string type = 1;
+    User data = 2;
+}
