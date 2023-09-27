@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "comment-service"
+version = "1.0.0"
+description = "Panels - Comment Service"
+license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/hexolan/panels"
+authors = ["Declan <declan@hexolan.dev>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+grpcio = "^1.57.0"
+pydantic = "^2.3.0"
+pydantic-settings = "^2.0.3"
+databases = {extras = ["asyncpg"], version = "^0.8.0"}
+grpcio-health-checking = "^1.57.0"
+aiokafka = "^0.8.1"
+redis = "^5.0.0"
+
+[tool.poetry.dev-dependencies]
+grpcio-tools = "^1.57.0"
+protoletariat = "^3.2.19"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
