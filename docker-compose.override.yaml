@@ -1,0 +1,245 @@
+version: "3.8"
+
+services:
+  # Overrides
+  kafka:
+    ports:
+      - 9092:9092
+
+  frontend:
+    ports:
+      - 80:80
+
+  gateway-service:
+    ports:
+      - 3000:3000
+
+  panel-service:
+    depends_on:
+      - panel-service-migrations
+
+  post-service:
+    depends_on:
+      - post-service-migrations
+
+  auth-service:
+    depends_on:
+      - auth-service-migrations
+
+  comment-service:
+    depends_on:
+      - comment-service-migrations
+
+  # Migrations
+  panel-service-migrations:
+    image: migrate/migrate:4
+    command: "-path=/migrations -database postgresql://postgres:postgres@panel-service-postgres:5432/postgres?sslmode=disable up"
+    volumes:
+      - ./services/panel-service/internal/postgres/migrations:/migrations
+    depends_on:
+      panel-service-postgres:
+        condition: service_healthy
+    networks:
+      - panel-service-network
+
+  post-service-migrations:
+    image: migrate/migrate:4
+    command: "-path=/migrations -database postgresql://postgres:postgres@post-service-postgres:5432/postgres?sslmode=disable up"
+    volumes:
+      - ./services/post-service/internal/postgres/migrations:/migrations
+    depends_on:
+      post-service-postgres:
+        condition: service_healthy
+    networks:
+      - post-service-network
+
+  auth-service-migrations:
+    image: migrate/migrate:4
+    command: "-path=/migrations -database postgresql://postgres:postgres@auth-service-postgres:5432/postgres?sslmode=disable up"
+    volumes:
+      - ./services/auth-service/auth_service/postgres/migrations:/migrations
+    depends_on:
+      auth-service-postgres:
+        condition: service_healthy
+    networks:
+      - auth-service-network
+
+  comment-service-migrations:
+    image: migrate/migrate:4
+    command: "-path=/migrations -database postgresql://postgres:postgres@comment-service-postgres:5432/postgres?sslmode=disable up"
+    volumes:
+      - ./services/comment-service/comment_service/postgres/migrations:/migrations
+    depends_on:
+      comment-service-postgres:
+        condition: service_healthy
+    networks:
+      - comment-service-network
+
+  # Postgres Instances
+  panel-service-postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - panel-service-postgres-volume:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "--dbname={POSTGRES_DB}"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 30s
+    ports:
+      - 5432:5432
+    networks:
+      - panel-service-network
+
+  post-service-postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "--dbname={POSTGRES_DB}"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 30s
+    volumes:
+      - post-service-postgres-volume:/var/lib/postgresql
+    ports:
+      - 5433:5432
+    networks:
+      - post-service-network
+
+  auth-service-postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "--dbname={POSTGRES_DB}"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 30s
+    volumes:
+      - auth-service-postgres-volume:/var/lib/postgresql
+    ports:
+      - 5434:5432
+    networks:
+      - auth-service-network
+
+  comment-service-postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "--dbname={POSTGRES_DB}"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 30s
+    volumes:
+      - comment-service-postgres-volume:/var/lib/postgresql
+    ports:
+      - 5435:5432
+    networks:
+      - comment-service-network
+
+  # Redis Instances
+  panel-service-redis:
+    image: redis:7.2
+    restart: unless-stopped
+    command: redis-server --requirepass redis --maxmemory 250mb --maxmemory-policy allkeys-lru
+    ports:
+      - 6379:6379
+    networks:
+      - panel-service-network
+
+  post-service-redis:
+    image: redis:7.2
+    restart: unless-stopped
+    command: redis-server --requirepass redis --maxmemory 250mb --maxmemory-policy allkeys-lru
+    ports:
+      - 6380:6379
+    networks:
+      - post-service-network
+
+  comment-service-redis:
+    image: redis:7.2
+    restart: unless-stopped
+    command: "redis-server --requirepass redis --maxmemory 250mb --maxmemory-policy allkeys-lru"
+    ports:
+      - 6381:6379
+    networks:
+      - comment-service-network
+
+  # Mongo Instance
+  user-service-mongo:
+    image: mongo:7.0
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "mongo"
+      MONGO_INITDB_ROOT_PASSWORD: "mongo"
+      MONGO_INITDB_DATABASE: "user"
+    volumes:
+      - user-service-mongo-volume:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - user-service-network
+
+  # Dev Tools
+  dev-kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    restart: unless-stopped
+    environment:
+      KAFKA_CLUSTERS_0_NAME: "panels"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka:19092"
+      DYNAMIC_CONFIG_ENABLED: "true"
+    ports:
+      - 8080:8080
+    networks:
+      - services-network
+
+  dev-mongo-express:
+    image: mongo-express:latest
+    restart: unless-stopped
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: "mongo"
+      ME_CONFIG_MONGODB_ADMINPASSWORD: "mongo"
+      ME_CONFIG_MONGODB_URL: "mongodb://mongo:mongo@user-service-mongo:27017/"
+    ports:
+      - 8081:8081
+    networks:
+      - user-service-network
+
+  dev-adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: "post-service-postgres:5432"
+    ports:
+      - 8082:8080
+    networks:
+      - panel-service-network
+      - post-service-network
+      - auth-service-network
+      - comment-service-network
+
+volumes:
+  panel-service-postgres-volume:
+  post-service-postgres-volume:
+  user-service-mongo-volume:
+  auth-service-postgres-volume:
+  comment-service-postgres-volume:

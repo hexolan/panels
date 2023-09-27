@@ -1,0 +1,155 @@
+version: "3.8"
+
+services:
+  # Kafka
+  kafka:
+    image: bitnami/kafka:3.4
+    restart: unless-stopped
+    environment:
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_LISTENERS=CONTROLLER://:19093,INTERNAL://:19092,EXTERNAL://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=INTERNAL://kafka:19092,EXTERNAL://localhost:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:19093
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=INTERNAL
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_KRAFT_CLUSTER_ID=g9rbXaCaSGqB3CURPeEvTA
+    volumes:
+      - kafka-volume:/bitnami/kafka
+    healthcheck:
+      # create the topics that are not auto-created (if they do not exist) as part of the healthcheck (when running with docker-compose)
+      test: ["CMD-SHELL", "kafka-topics.sh --bootstrap-server kafka:19092 --if-not-exists --create --topic panel && kafka-topics.sh --bootstrap-server kafka:19092 --if-not-exists --create --topic comment"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+    networks:
+      - services-network
+
+  # Frontend
+  frontend:
+    image: panels/frontend
+    build: 
+      context: ./services/frontend
+      args:
+        - VITE_API_URL=http://127.0.0.1:3000/
+    networks:
+      - edge-network
+
+  # Gateway Service
+  gateway-service:
+    image: panels/gateway-service
+    build: 
+      context: ./services/gateway-service
+    restart: on-failure
+    environment:
+      - PANEL_SVC_ADDR=panel-service:9090
+      - POST_SVC_ADDR=post-service:9090
+      - USER_SVC_ADDR=user-service:9090
+      - AUTH_SVC_ADDR=auth-service:9090
+      - COMMENT_SVC_ADDR=comment-service:9090
+      - JWT_PUBLIC_KEY=LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUE3TGhQekc1cmNVMkE1NXFlazRmSwpFN1QwWXlYTFRrRVhqVVh2ZDdmLzdVWTIxQmVsZ0hWVFMyTDcxUW1zL3NPakhFWHdSOGx3dlA5VnhXRFRBMGJ4Cm45cnBYVFYwVXVGRWFtOEpGZTcwTzdaOSs0M1d1ampiYWdNT04vMTVZa3dGOTR4aVpQcllyWjE4TEUyZVZIaUMKZVFtdFczVzhBSzVxWnpydkREd0FkYlRMdm1LRWtEcGVKYTgyQXkwTy9jcW1JUTdDdHU0R1djendSSk1iTTJUbQo1UFkzWUNWZ0V0WE1WY1AwZWVhd2NJQXRZNVdyWXJ0T1VkTUFodFl0RlhYVWlObWliQVI4bFM4TXUyMGp1Rnc5CmJnb2FQUXZSN2FXLzhLL2hwaUdmbXN5V1lmbGpHM0xOYlJCMEpiclU5cTZ6NlcvckQzRlVCQmVDeW9WelA4TjMKU3dJREFRQUIKLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
+    networks:
+      - edge-network
+      - services-network
+
+  # Panel Service
+  panel-service:
+    image: panels/panel-service
+    build: 
+      context: ./services/panel-service
+    restart: on-failure
+    environment:
+      - KAFKA_BROKERS=kafka:19092
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASS=postgres
+      - POSTGRES_HOST=panel-service-postgres:5432
+      - POSTGRES_DATABASE=postgres
+      - REDIS_HOST=panel-service-redis:6379
+      - REDIS_PASS=redis
+      - LOG_LEVEL=info
+    networks:
+      - services-network
+      - panel-service-network
+
+  # Post Service
+  post-service:
+    image: panels/post-service
+    build: 
+      context: ./services/post-service
+    restart: on-failure
+    environment:
+      - KAFKA_BROKERS=kafka:19092
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASS=postgres
+      - POSTGRES_HOST=post-service-postgres:5432
+      - POSTGRES_DATABASE=postgres
+      - REDIS_HOST=post-service-redis:6379
+      - REDIS_PASS=redis
+      - LOG_LEVEL=info
+    networks:
+      - services-network
+      - post-service-network
+
+  # User Service
+  user-service:
+    image: panels/user-service
+    build: 
+      context: ./services/user-service
+    restart: on-failure
+    environment:
+      - KAFKA_BROKERS=kafka:19092
+      - MONGODB_URI=mongodb://mongo:mongo@user-service-mongo:27017/
+    networks:
+      - services-network
+      - user-service-network
+
+  # Auth Service
+  auth-service:
+    image: panels/auth-service
+    build: 
+      context: ./services/auth-service
+    restart: on-failure
+    environment:
+      - KAFKA_BROKERS=kafka:19092
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASS=postgres
+      - POSTGRES_HOST=auth-service-postgres:5432
+      - POSTGRES_DATABASE=postgres
+      - PASSWORD_PEPPER=4d0c18c368489d4c0b48c497efb1d6b3
+      - JWT_PUBLIC_KEY=LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUE3TGhQekc1cmNVMkE1NXFlazRmSwpFN1QwWXlYTFRrRVhqVVh2ZDdmLzdVWTIxQmVsZ0hWVFMyTDcxUW1zL3NPakhFWHdSOGx3dlA5VnhXRFRBMGJ4Cm45cnBYVFYwVXVGRWFtOEpGZTcwTzdaOSs0M1d1ampiYWdNT04vMTVZa3dGOTR4aVpQcllyWjE4TEUyZVZIaUMKZVFtdFczVzhBSzVxWnpydkREd0FkYlRMdm1LRWtEcGVKYTgyQXkwTy9jcW1JUTdDdHU0R1djendSSk1iTTJUbQo1UFkzWUNWZ0V0WE1WY1AwZWVhd2NJQXRZNVdyWXJ0T1VkTUFodFl0RlhYVWlObWliQVI4bFM4TXUyMGp1Rnc5CmJnb2FQUXZSN2FXLzhLL2hwaUdmbXN5V1lmbGpHM0xOYlJCMEpiclU5cTZ6NlcvckQzRlVCQmVDeW9WelA4TjMKU3dJREFRQUIKLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
+      - JWT_PRIVATE_KEY=LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcGdJQkFBS0NBUUVBN0xoUHpHNXJjVTJBNTVxZWs0ZktFN1QwWXlYTFRrRVhqVVh2ZDdmLzdVWTIxQmVsCmdIVlRTMkw3MVFtcy9zT2pIRVh3Ujhsd3ZQOVZ4V0RUQTBieG45cnBYVFYwVXVGRWFtOEpGZTcwTzdaOSs0M1cKdWpqYmFnTU9OLzE1WWt3Rjk0eGlaUHJZcloxOExFMmVWSGlDZVFtdFczVzhBSzVxWnpydkREd0FkYlRMdm1LRQprRHBlSmE4MkF5ME8vY3FtSVE3Q3R1NEdXY3p3UkpNYk0yVG01UFkzWUNWZ0V0WE1WY1AwZWVhd2NJQXRZNVdyCllydE9VZE1BaHRZdEZYWFVpTm1pYkFSOGxTOE11MjBqdUZ3OWJnb2FQUXZSN2FXLzhLL2hwaUdmbXN5V1lmbGoKRzNMTmJSQjBKYnJVOXE2ejZXL3JEM0ZVQkJlQ3lvVnpQOE4zU3dJREFRQUJBb0lCQVFEWHNyYWIyLzJ4RjJNZgpKd2ZaL0lDSTVubE5vdEdYTTc3SEx2T2VqaDM0MGVNQjdhNFQyRlNXdTlJbTlCTWJiWjdDRTRSM2xUbFNMZ08wCnY1NW5QUXpNa1lmVk0vRVQyRW9rQlpzc3pqamo5RXpsbkFBT1hlS292YklHR01TemFmeUI3ZngyY1JCaFdzQWMKQ25uOEZIY20zVWVHc0Vnb0FzWFgzSjZYOGxDazd1R0hHZ0hnMk9vSUd5M2dIeGJwOEJiVlJXeEFIMm5rV2Nxegp6QzQ1anpFK2tubVprVzdJOTllQXdMTjc3QXpEZlhZSU1rdjZFdnhwWVdQZ1VJa253eXd3MmdoY0dtbFhwazdMCmdUM2t5dWpEaCtqOVprQVp2N1F3YktWa2EvSFdBRDJDR0tQNFhMK2dhZW9zZUdDMTlja0VvbHl3YWYxYzRneTIKRE41Z0JDSHBBb0dCQVByalFob2NoSXUxYzNTOE5hd0NhRTc3Z0YxcURXQTM1b25JS0Z1aFQwYTV3Vi9ZTHNVcgprMkl6TnZoTHFvV0tTbmRhTmd4aWNpOTVkK3dYVk9wS0tDWVgrR2NVNWZEdWJJeDdqb0tWcUxqK2hNdGIvNUFLClMwUDAwcmpCUGZQcU1rK21XYUcxWE1ieDEvbmUzYm9XVlZDcitQblZvNzJlWjl6OHVsKzdtenN0QW9HQkFQR0wKSmU3aUU3ZmRLWXgxQ3IzbDdJbXFocG1UbUcrd29od3BadVR4NEtDeWMwZVpSUEpKR0txMytUdHp6eFNkRzk0VAozY3p5Ulo3TWJqWUtyeVZPdzRHMklpMWVaMW9pSVJrSThRMkNCV0NZYWl5WFhBd0xlSkhvQzl5amdBRDB6V21TCkxHcWZwSnBaSkU5Q3N1SDJVMjdxY0ZrQThvM2tmOENFOHJDRkNLZFhBb0dCQUpmOWkzTTBLWnhWemQ4L2tpaGwKd1Bsd1plQ3h1ZTY3anQrVHNkZHBEeFRpdmVLcG5oUDNCUyt0cFRTZzZtcENVRUNrRnpCRGg3ZDVHQXlnU2VJeQpFTWFiS1BLUjk0ZVJlWk5WMncwRFM1YmZJbVhza3hPWkdPWFBjTVZhMUlSck1oV015cW9yckV3ZUFXQ3dBcFdVCnFCVGFTbGhZYy8wUTlRMHMwbC9pMFBUMUFvR0JBTk9wSUx0OVp0UUd2TUwxU1Uxdzd0OFFERlVGemwySlJmVXgKbnBYZkV2MGVnd0JwNGM0Q21kZjMwVEgwNExEcW42SHlmTGw4VDkvQXVvOG11NllRcUNmQlI1L0VDd01qeHljZAorOFhmZXdEVGJxN1dqL1dLRThTZnQ4MUhoUUxSZ2pNUndWUkp3cjd5Z0d2b1FjTGF6Ty8wQmpFb01HU0FxQ1kzCkdrZnV1OCtQQW9HQkFPVXhGcXNrSVNxb3AyUGJZRmQ4SEU3NHhKYlZBRzFKZjh1WEllMnlzRHFrdnU5RmJ6djUKWnc1aW52dHA1VkhwWjBTTFN5dFViNktzSGNSaXFJNXMybW5NbmFMaXAyUmd0bkVzQTVmY25XeDFhRlFJclhYYgpVUXFEdklLd1JoT2ZjZkRkdTFDTFlpb2J0Y0Nlc0JISUcxc08yKy9UYmF1WG5scGFXWXo3Q1hrVgotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
+    networks:
+      - services-network
+      - auth-service-network
+
+  # Comment Service
+  comment-service:
+    image: panels/comment-service
+    build: 
+      context: ./services/comment-service
+    restart: on-failure
+    environment:
+      - KAFKA_BROKERS=kafka:19092
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASS=postgres
+      - POSTGRES_HOST=comment-service-postgres:5432
+      - POSTGRES_DATABASE=postgres
+      - REDIS_HOST=comment-service-redis:6379
+      - REDIS_PASS=redis
+    networks:
+      - services-network
+      - comment-service-network
+
+volumes:
+  kafka-volume:
+
+networks:
+  edge-network:
+  services-network:
+  panel-service-network:
+  post-service-network:
+  user-service-network:
+  auth-service-network:
+  comment-service-network:
