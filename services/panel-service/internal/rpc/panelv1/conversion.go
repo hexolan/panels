@@ -11,10 +11,10 @@ import (
 // Panel -> Protobuf 'Panel'
 func PanelToProto(panel *internal.Panel) *Panel {
 	proto := Panel{
-		Id: internal.StringifyPanelId(panel.Id),
-		Name: panel.Name,
+		Id:          internal.StringifyPanelId(panel.Id),
+		Name:        panel.Name,
 		Description: panel.Description,
-		CreatedAt: timestamppb.New(panel.CreatedAt.Time),
+		CreatedAt:   timestamppb.New(panel.CreatedAt.Time),
 	}
 
 	// convert nullable attributes to PB form (if present)
@@ -44,7 +44,7 @@ func PanelFromProto(proto *Panel) (*internal.Panel, error) {
 // Protobuf 'PanelMutable' -> PanelCreate
 func PanelCreateFromProto(proto *PanelMutable) internal.PanelCreate {
 	return internal.PanelCreate{
-		Name: proto.GetName(),
+		Name:        proto.GetName(),
 		Description: proto.GetDescription(),
 	}
 }
@@ -52,7 +52,7 @@ func PanelCreateFromProto(proto *PanelMutable) internal.PanelCreate {
 // Protobuf 'PanelMutable' -> PanelUpdate
 func PanelUpdateFromProto(proto *PanelMutable) internal.PanelUpdate {
 	return internal.PanelUpdate{
-		Name: proto.Name,
+		Name:        proto.Name,
 		Description: proto.Description,
 	}
 }

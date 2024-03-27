@@ -1,8 +1,22 @@
+// Copyright 2023 Declan Teevan
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package v1
 
 import (
-	"time"
 	"context"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 
@@ -29,7 +43,7 @@ func getPanelIDFromName(name string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	
+
 	return panel.GetId(), nil
 }
 
@@ -76,7 +90,7 @@ func UpdatePanelById(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	panel, err := rpc.Svcs.GetPanelSvc().UpdatePanel(
-		ctx, 
+		ctx,
 		&panelv1.UpdatePanelByIdRequest{Id: c.Params("id"), Data: patchData},
 	)
 	if err != nil {
@@ -106,7 +120,7 @@ func UpdatePanelByName(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	panel, err := rpc.Svcs.GetPanelSvc().UpdatePanelByName(
-		ctx, 
+		ctx,
 		&panelv1.UpdatePanelByNameRequest{Name: c.Params("name"), Data: patchData},
 	)
 	if err != nil {

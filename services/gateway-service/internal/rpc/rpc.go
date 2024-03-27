@@ -1,3 +1,17 @@
+// Copyright 2023 Declan Teevan
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package rpc
 
 import (
@@ -7,20 +21,20 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/hexolan/panels/gateway-service/internal"
+	"github.com/hexolan/panels/gateway-service/internal/rpc/authv1"
+	"github.com/hexolan/panels/gateway-service/internal/rpc/commentv1"
 	"github.com/hexolan/panels/gateway-service/internal/rpc/panelv1"
 	"github.com/hexolan/panels/gateway-service/internal/rpc/postv1"
 	"github.com/hexolan/panels/gateway-service/internal/rpc/userv1"
-	"github.com/hexolan/panels/gateway-service/internal/rpc/authv1"
-	"github.com/hexolan/panels/gateway-service/internal/rpc/commentv1"
 )
 
 var Svcs RPCServices
 
 type RPCServices struct {
-	panelSvcConn *grpc.ClientConn
-	postSvcConn *grpc.ClientConn
-	userSvcConn *grpc.ClientConn
-	authSvcConn *grpc.ClientConn
+	panelSvcConn   *grpc.ClientConn
+	postSvcConn    *grpc.ClientConn
+	userSvcConn    *grpc.ClientConn
+	authSvcConn    *grpc.ClientConn
 	commentSvcConn *grpc.ClientConn
 }
 
@@ -46,10 +60,10 @@ func (rpcSvcs RPCServices) GetCommentSvc() commentv1.CommentServiceClient {
 
 func DialRPCServices(cfg internal.Config) {
 	Svcs = RPCServices{
-		panelSvcConn: dialRPC(cfg.PanelSvcAddr),
-		postSvcConn: dialRPC(cfg.PostSvcAddr),
-		userSvcConn: dialRPC(cfg.UserSvcAddr),
-		authSvcConn: dialRPC(cfg.AuthSvcAddr),
+		panelSvcConn:   dialRPC(cfg.PanelSvcAddr),
+		postSvcConn:    dialRPC(cfg.PostSvcAddr),
+		userSvcConn:    dialRPC(cfg.UserSvcAddr),
+		authSvcConn:    dialRPC(cfg.AuthSvcAddr),
 		commentSvcConn: dialRPC(cfg.CommentSvcAddr),
 	}
 }

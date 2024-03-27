@@ -1,15 +1,29 @@
+// Copyright 2023 Declan Teevan
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package postgres
 
 import (
 	"context"
-	"strings"
 	"encoding/json"
+	"strings"
 
-	"github.com/rs/zerolog/log"
 	"github.com/doug-martin/goqu/v9"
 	_ "github.com/doug-martin/goqu/v9/dialect/postgres"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/rs/zerolog/log"
 
 	"github.com/hexolan/panels/post-service/internal"
 )
@@ -42,7 +56,7 @@ func (r postDatabaseRepo) GetPost(ctx context.Context, id internal.PostId) (*int
 	var post internal.Post
 	row := r.db.QueryRow(ctx, "SELECT id, panel_id, author_id, title, content, created_at, updated_at FROM posts WHERE id=$1", id)
 	err := row.Scan(&post.Id, &post.PanelId, &post.AuthorId, &post.Title, &post.Content, &post.CreatedAt, &post.UpdatedAt)
-    if err != nil {
+	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, internal.WrapServiceError(err, internal.NotFoundErrorCode, "post not found")
 		} else if strings.Contains(err.Error(), "failed to connect to") {
@@ -59,7 +73,7 @@ func (r postDatabaseRepo) GetPanelPost(ctx context.Context, id internal.PostId, 
 	var post internal.Post
 	row := r.db.QueryRow(ctx, "SELECT id, panel_id, author_id, title, content, created_at, updated_at FROM posts WHERE id=$1 AND panel_id=$2", id, panelId)
 	err := row.Scan(&post.Id, &post.PanelId, &post.AuthorId, &post.Title, &post.Content, &post.CreatedAt, &post.UpdatedAt)
-    if err != nil {
+	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, internal.WrapServiceError(err, internal.NotFoundErrorCode, "post not found on that panel")
 		} else if strings.Contains(err.Error(), "failed to connect to") {
@@ -77,7 +91,7 @@ func (r postDatabaseRepo) UpdatePost(ctx context.Context, id internal.PostId, da
 	patchData := goqu.Record{"updated_at": goqu.L("timezone('utc', now())")}
 	marshalled, _ := json.Marshal(data)
 	_ = json.Unmarshal(marshalled, &patchData)
-	
+
 	// Build a statement to updated the post
 	statement, args, _ := goqu.Dialect("postgres").Update("posts").Prepared(true).Set(patchData).Where(goqu.C("id").Eq(id)).ToSQL()
 
@@ -123,7 +137,7 @@ func (r postDatabaseRepo) DeletePost(ctx context.Context, id internal.PostId) er
 func (r postDatabaseRepo) GetFeedPosts(ctx context.Context) ([]*internal.Post, error) {
 	// todo: pagination
 	rows, err := r.db.Query(ctx, "SELECT id, panel_id, author_id, title, content, created_at, updated_at FROM posts ORDER BY created_at DESC LIMIT 25")
-    if err != nil {
+	if err != nil {
 		if strings.Contains(err.Error(), "failed to connect to") {
 			return nil, internal.WrapServiceError(err, internal.ConnectionErrorCode, "failed to connect to database")
 		}
@@ -152,7 +166,7 @@ func (r postDatabaseRepo) GetFeedPosts(ctx context.Context) ([]*internal.Post, e
 func (r postDatabaseRepo) GetUserPosts(ctx context.Context, userId string) ([]*internal.Post, error) {
 	// todo: pagination
 	rows, err := r.db.Query(ctx, "SELECT id, panel_id, author_id, title, content, created_at, updated_at FROM posts WHERE author_id=$1 ORDER BY created_at DESC LIMIT 25", userId)
-    if err != nil {
+	if err != nil {
 		if strings.Contains(err.Error(), "failed to connect to") {
 			return nil, internal.WrapServiceError(err, internal.ConnectionErrorCode, "failed to connect to database")
 		}
@@ -181,7 +195,7 @@ func (r postDatabaseRepo) GetUserPosts(ctx context.Context, userId string) ([]*i
 func (r postDatabaseRepo) GetPanelPosts(ctx context.Context, panelId string) ([]*internal.Post, error) {
 	// todo: pagination
 	rows, err := r.db.Query(ctx, "SELECT id, panel_id, author_id, title, content, created_at, updated_at FROM posts WHERE panel_id=$1 ORDER BY created_at DESC LIMIT 25", panelId)
-    if err != nil {
+	if err != nil {
 		if strings.Contains(err.Error(), "failed to connect to") {
 			return nil, internal.WrapServiceError(err, internal.ConnectionErrorCode, "failed to connect to database")
 		}

@@ -2,7 +2,7 @@
   "name": "frontend",
   "description": "Panels - Frontend Site",
   "version": "1.0.0",
-  "author": "Declan <declan@hexolan.dev>",
+  "author": "Declan Teevan <dt@hexolan.com>",
   "license": "Apache-2.0",
   "type": "module",
   "scripts": {

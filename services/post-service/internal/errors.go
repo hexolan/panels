@@ -1,3 +1,17 @@
+// Copyright 2023 Declan Teevan
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package internal
 
 import (
@@ -10,7 +24,7 @@ import (
 func NewServiceError(code ErrorCode, msg string) error {
 	return &ServiceError{
 		code: code,
-		msg: msg,
+		msg:  msg,
 	}
 }
 
@@ -20,8 +34,8 @@ func NewServiceErrorf(code ErrorCode, msg string, args ...interface{}) error {
 
 func WrapServiceError(original_err error, code ErrorCode, msg string) error {
 	return &ServiceError{
-		code: code,
-		msg: msg,
+		code:         code,
+		msg:          msg,
 		original_err: original_err,
 	}
 }
@@ -39,12 +53,12 @@ const (
 
 func (c ErrorCode) GRPCCode() codes.Code {
 	codeMap := map[ErrorCode]codes.Code{
-		UnknownErrorCode: codes.Unknown,
-		NotFoundErrorCode: codes.NotFound,
-		ConflictErrorCode: codes.AlreadyExists,
-		ForbiddenErrorCode: codes.PermissionDenied,
+		UnknownErrorCode:         codes.Unknown,
+		NotFoundErrorCode:        codes.NotFound,
+		ConflictErrorCode:        codes.AlreadyExists,
+		ForbiddenErrorCode:       codes.PermissionDenied,
 		InvalidArgumentErrorCode: codes.InvalidArgument,
-		ConnectionErrorCode: codes.Unavailable,
+		ConnectionErrorCode:      codes.Unavailable,
 	}
 
 	grpcCode, mapped := codeMap[c]
@@ -55,8 +69,8 @@ func (c ErrorCode) GRPCCode() codes.Code {
 }
 
 type ServiceError struct {
-	code ErrorCode
-	msg string
+	code         ErrorCode
+	msg          string
 	original_err error
 }
 

@@ -1,18 +1,32 @@
+// Copyright 2023 Declan Teevan
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package postgres
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"strings"
-	"encoding/json"
 
-	"github.com/rs/zerolog/log"
 	"github.com/doug-martin/goqu/v9"
 	_ "github.com/doug-martin/goqu/v9/dialect/postgres"
 	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/rs/zerolog/log"
 
 	"github.com/hexolan/panels/panel-service/internal"
 )
@@ -40,7 +54,7 @@ func (r panelDatabaseRepo) transformToPatchData(data internal.PanelUpdate) goqu.
 func (r panelDatabaseRepo) GetPanelIdFromName(ctx context.Context, name string) (*int64, error) {
 	var id int64
 	err := r.db.QueryRow(ctx, "SELECT id FROM panels WHERE LOWER(name)=LOWER($1)", name).Scan(&id)
-    if err != nil {
+	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, internal.WrapServiceError(err, internal.NotFoundErrorCode, "panel not found")
 		} else if strings.Contains(err.Error(), "failed to connect to") {
@@ -76,7 +90,7 @@ func (r panelDatabaseRepo) GetPanel(ctx context.Context, id int64) (*internal.Pa
 	var panel internal.Panel
 	row := r.db.QueryRow(ctx, "SELECT id, name, description, created_at, updated_at FROM panels WHERE id=$1", id)
 	err := row.Scan(&panel.Id, &panel.Name, &panel.Description, &panel.CreatedAt, &panel.UpdatedAt)
-    if err != nil {
+	if err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, internal.WrapServiceError(err, internal.NotFoundErrorCode, "panel not found")
 		} else if strings.Contains(err.Error(), "failed to connect to") {

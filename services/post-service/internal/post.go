@@ -1,33 +1,47 @@
+// Copyright 2023 Declan Teevan
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package internal
 
 import (
-	"regexp"
 	"context"
-	"strconv"
-	"encoding/json"
 	"database/sql"
 	"database/sql/driver"
-	
-	"github.com/jackc/pgx/v5/pgtype"
+	"encoding/json"
+	"regexp"
+	"strconv"
+
 	"github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 // Post Models
 type Post struct {
 	Id PostId `json:"id"`
 
-	PanelId string `json:"panel_id"`
+	PanelId  string `json:"panel_id"`
 	AuthorId string `json:"author_id"`
 
-	Title string `json:"title"`
+	Title   string `json:"title"`
 	Content string `json:"content"`
-	
+
 	CreatedAt pgtype.Timestamp `json:"created_at"`
 	UpdatedAt pgtype.Timestamp `json:"updated_at"`
 }
 
 type PostCreate struct {
-	Title string `json:"title"`
+	Title   string `json:"title"`
 	Content string `json:"content"`
 }
 
@@ -40,7 +54,7 @@ func (p *PostCreate) Validate() error {
 }
 
 type PostUpdate struct {
-	Title *string `json:"title,omitempty"`
+	Title   *string `json:"title,omitempty"`
 	Content *string `json:"content,omitempty"`
 }
 
@@ -58,15 +72,15 @@ type PostService interface {
 }
 
 type PostRepository interface {
-    CreatePost(ctx context.Context, panelId string, authorId string, data PostCreate) (*Post, error)
-    GetPost(ctx context.Context, id PostId) (*Post, error)
-    GetPanelPost(ctx context.Context, id PostId, panelId string) (*Post, error)
-    UpdatePost(ctx context.Context, id PostId, data PostUpdate) (*Post, error)
-    DeletePost(ctx context.Context, id PostId) error
+	CreatePost(ctx context.Context, panelId string, authorId string, data PostCreate) (*Post, error)
+	GetPost(ctx context.Context, id PostId) (*Post, error)
+	GetPanelPost(ctx context.Context, id PostId, panelId string) (*Post, error)
+	UpdatePost(ctx context.Context, id PostId, data PostUpdate) (*Post, error)
+	DeletePost(ctx context.Context, id PostId) error
 
-    GetFeedPosts(ctx context.Context) ([]*Post, error)
-    GetUserPosts(ctx context.Context, userId string) ([]*Post, error)
-    GetPanelPosts(ctx context.Context, panelId string) ([]*Post, error)
+	GetFeedPosts(ctx context.Context) ([]*Post, error)
+	GetUserPosts(ctx context.Context, userId string) ([]*Post, error)
+	GetPanelPosts(ctx context.Context, panelId string) ([]*Post, error)
 }
 
 type PostDBRepository interface {

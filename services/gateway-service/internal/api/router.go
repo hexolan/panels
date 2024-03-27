@@ -1,10 +1,24 @@
+// Copyright 2023 Declan Teevan
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package api
 
 import (
 	"github.com/gofiber/fiber/v2"
 
-	"github.com/hexolan/panels/gateway-service/internal/api/v1"
 	"github.com/hexolan/panels/gateway-service/internal/api/handlers"
+	"github.com/hexolan/panels/gateway-service/internal/api/v1"
 )
 
 func RegisterRoutes(app *fiber.App) {
@@ -36,10 +50,10 @@ func RegisterRoutes(app *fiber.App) {
 
 	panelV1.Get("/id/:panel_id/posts", v1.GetPanelPostsFromId)
 	panelV1.Get("/name/:panel_name/posts", v1.GetPanelPostsFromName)
-	
+
 	panelV1.Get("/id/:panel_id/posts/:id", v1.GetPanelPostFromId)
 	panelV1.Get("/name/:panel_name/posts/:id", v1.GetPanelPostFromName)
-	
+
 	panelV1.Post("/id/:panel_id", handlers.AuthMiddleware, v1.CreatePanelPostFromId)
 	panelV1.Post("/name/:panel_name", handlers.AuthMiddleware, v1.CreatePanelPostFromName)
 
@@ -51,10 +65,10 @@ func RegisterRoutes(app *fiber.App) {
 
 	userV1.Get("/username/:username", v1.GetUserByUsername)
 	userV1.Delete("/username/:username", handlers.AuthMiddleware, v1.DeleteUserByUsername)
-	
+
 	userV1.Get("/me", handlers.AuthMiddleware, v1.GetCurrentUser)
 	userV1.Delete("/me", handlers.AuthMiddleware, v1.DeleteCurrentUser)
-	
+
 	// Auth Service Routes
 	authV1.Post("/login", v1.LoginWithPassword)
 

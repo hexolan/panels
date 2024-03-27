@@ -1,14 +1,28 @@
+// Copyright 2023 Declan Teevan
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package v1
 
 import (
-	"time"
 	"context"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 
+	"github.com/hexolan/panels/gateway-service/internal/api/handlers"
 	"github.com/hexolan/panels/gateway-service/internal/rpc"
 	"github.com/hexolan/panels/gateway-service/internal/rpc/userv1"
-	"github.com/hexolan/panels/gateway-service/internal/api/handlers"
 )
 
 type userSignupForm struct {
@@ -87,7 +101,7 @@ func DeleteUserById(c *fiber.Ctx) error {
 	if currentUser.Id != c.Params("id") && !currentUser.IsAdmin {
 		return fiber.NewError(fiber.StatusForbidden, "no permissions to delete that user")
 	}
-	
+
 	// delete the user
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
@@ -113,7 +127,7 @@ func DeleteUserByUsername(c *fiber.Ctx) error {
 	if currentUser.Id != c.Params("id") && !currentUser.IsAdmin {
 		return fiber.NewError(fiber.StatusForbidden, "no permissions to delete that user")
 	}
-	
+
 	// delete the user
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
@@ -155,7 +169,7 @@ func UserSignup(c *fiber.Ctx) error {
 	if err := c.BodyParser(form); err != nil {
 		fiber.NewError(fiber.StatusBadRequest, "malformed request")
 	}
-	
+
 	// Attempt to create the user
 	// todo: defer this logic away from gateway-service in future (potentially into seperate registration-service)
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -189,7 +203,7 @@ func UserSignup(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"status": "success",
 		"data": fiber.Map{
-			"user": user,
+			"user":  user,
 			"token": token,
 		},
 	})

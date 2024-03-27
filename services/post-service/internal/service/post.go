@@ -1,3 +1,17 @@
+// Copyright 2023 Declan Teevan
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package service
 
 import (
@@ -17,7 +31,7 @@ type postService struct {
 func NewPostService(events producer.PostEventProducer, repo internal.PostRepository) internal.PostService {
 	return postService{
 		events: events,
-		repo: repo,
+		repo:   repo,
 	}
 }
 
@@ -30,7 +44,7 @@ func (srv postService) CreatePost(ctx context.Context, panelId string, authorId 
 
 	// Create the post
 	post, err := srv.repo.CreatePost(ctx, panelId, authorId, data)
-	
+
 	// Dispatch post created event
 	if err == nil {
 		srv.events.DispatchCreatedEvent(post)
@@ -44,7 +58,7 @@ func (srv postService) GetPost(ctx context.Context, id internal.PostId) (*intern
 }
 
 func (srv postService) GetPanelPost(ctx context.Context, id internal.PostId, panelId string) (*internal.Post, error) {
-	panelId = strings.ToLower(panelId)  // Panel IDs are case insensitive
+	panelId = strings.ToLower(panelId) // Panel IDs are case insensitive
 	return srv.repo.GetPanelPost(ctx, id, panelId)
 }
 
@@ -72,7 +86,7 @@ func (srv postService) UpdatePost(ctx context.Context, id internal.PostId, data 
 
 func (srv postService) DeletePost(ctx context.Context, id internal.PostId) error {
 	err := srv.repo.DeletePost(ctx, id)
-	
+
 	// Dispatch post deleted event
 	if err == nil {
 		srv.events.DispatchDeletedEvent(id)

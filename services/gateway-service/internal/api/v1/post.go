@@ -1,14 +1,28 @@
+// Copyright 2023 Declan Teevan
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package v1
 
 import (
-	"time"
 	"context"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 
+	"github.com/hexolan/panels/gateway-service/internal/api/handlers"
 	"github.com/hexolan/panels/gateway-service/internal/rpc"
 	"github.com/hexolan/panels/gateway-service/internal/rpc/postv1"
-	"github.com/hexolan/panels/gateway-service/internal/api/handlers"
 )
 
 func getPostById(postId string) (*postv1.Post, error) {
@@ -155,7 +169,7 @@ func UpdatePost(c *fiber.Ctx) error {
 		return err
 	}
 
-	if (post.AuthorId != currentUser.Id) {
+	if post.AuthorId != currentUser.Id {
 		return fiber.NewError(fiber.StatusForbidden, "no permissions to update that post")
 	}
 
@@ -191,10 +205,10 @@ func DeletePost(c *fiber.Ctx) error {
 		return err
 	}
 
-	if (post.AuthorId != currentUser.Id && !currentUser.IsAdmin) {
+	if post.AuthorId != currentUser.Id && !currentUser.IsAdmin {
 		return fiber.NewError(fiber.StatusForbidden, "no permissions to delete that post")
 	}
-	
+
 	// delete the post
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
@@ -235,8 +249,8 @@ func CreatePanelPostFromId(c *fiber.Ctx) error {
 		ctx,
 		&postv1.CreatePostRequest{
 			PanelId: panel.Id,
-			UserId: tokenClaims.Subject,
-			Data: newPost,
+			UserId:  tokenClaims.Subject,
+			Data:    newPost,
 		},
 	)
 	if err != nil {
@@ -272,8 +286,8 @@ func CreatePanelPostFromName(c *fiber.Ctx) error {
 		ctx,
 		&postv1.CreatePostRequest{
 			PanelId: panelId,
-			UserId: tokenClaims.Subject,
-			Data: newPost,
+			UserId:  tokenClaims.Subject,
+			Data:    newPost,
 		},
 	)
 	if err != nil {

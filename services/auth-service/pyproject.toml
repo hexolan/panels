@@ -5,7 +5,7 @@ description = "Panels - Auth Service"
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/hexolan/panels"
-authors = ["Declan <declan@hexolan.dev>"]
+authors = ["Declan Teevan <dt@hexolan.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"

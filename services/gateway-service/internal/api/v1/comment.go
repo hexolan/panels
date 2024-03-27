@@ -1,3 +1,17 @@
+// Copyright 2023 Declan Teevan
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package v1
 
 import (
@@ -48,7 +62,7 @@ func UpdateComment(c *fiber.Ctx) error {
 		return err
 	}
 
-	if (comment.AuthorId != currentUser.Id) {
+	if comment.AuthorId != currentUser.Id {
 		return fiber.NewError(fiber.StatusForbidden, "no permissions to update that comment")
 	}
 
@@ -64,7 +78,7 @@ func UpdateComment(c *fiber.Ctx) error {
 	comment, err = rpc.Svcs.GetCommentSvc().UpdateComment(
 		ctx,
 		&commentv1.UpdateCommentRequest{
-			Id: c.Params("id"),
+			Id:   c.Params("id"),
 			Data: updatedComment,
 		},
 	)
@@ -87,7 +101,7 @@ func DeleteComment(c *fiber.Ctx) error {
 		return err
 	}
 
-	if (comment.AuthorId != currentUser.Id && !currentUser.IsAdmin) {
+	if comment.AuthorId != currentUser.Id && !currentUser.IsAdmin {
 		return fiber.NewError(fiber.StatusForbidden, "no permissions to delete that comment")
 	}
 
@@ -123,16 +137,16 @@ func CreateComment(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	
+
 	// Create the comment
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	comment, err := rpc.Svcs.GetCommentSvc().CreateComment(
 		ctx,
 		&commentv1.CreateCommentRequest{
-			PostId: post.Id,
+			PostId:   post.Id,
 			AuthorId: tokenClaims.Subject,
-			Data: newComment,
+			Data:     newComment,
 		},
 	)
 	if err != nil {

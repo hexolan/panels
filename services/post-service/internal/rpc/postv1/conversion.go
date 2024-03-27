@@ -12,10 +12,10 @@ func PostToProto(post *internal.Post) *Post {
 	proto := Post{
 		Id: post.Id.GetReprId(),
 
-		PanelId: post.PanelId,
+		PanelId:  post.PanelId,
 		AuthorId: post.AuthorId,
 
-		Title: post.Title,
+		Title:   post.Title,
 		Content: post.Content,
 
 		CreatedAt: timestamppb.New(post.CreatedAt.Time),
@@ -36,12 +36,12 @@ func PostsToProto(posts []*internal.Post) []*Post {
 		protoPosts = append(protoPosts, PostToProto(post))
 	}
 	return protoPosts
-} 
+}
 
 // Protobuf 'PostMutable' -> PostCreate
 func PostCreateFromProto(proto *PostMutable) internal.PostCreate {
 	return internal.PostCreate{
-		Title: proto.GetTitle(),
+		Title:   proto.GetTitle(),
 		Content: proto.GetContent(),
 	}
 }
@@ -49,7 +49,7 @@ func PostCreateFromProto(proto *PostMutable) internal.PostCreate {
 // Protobuf 'PostMutable' -> PostUpdate
 func PostUpdateFromProto(proto *PostMutable) internal.PostUpdate {
 	return internal.PostUpdate{
-		Title: proto.Title,
+		Title:   proto.Title,
 		Content: proto.Content,
 	}
 }

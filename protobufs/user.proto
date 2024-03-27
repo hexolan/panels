@@ -1,3 +1,17 @@
+// Copyright 2023 Declan Teevan
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 syntax = "proto3";
 
 package panels.user.v1;
@@ -6,63 +20,63 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 service UserService {
-    rpc CreateUser(CreateUserRequest) returns (User) {}
+  rpc CreateUser(CreateUserRequest) returns (User) {}
 
-    rpc GetUser(GetUserByIdRequest) returns (User) {}
-    rpc GetUserByName(GetUserByNameRequest) returns (User) {}
+  rpc GetUser(GetUserByIdRequest) returns (User) {}
+  rpc GetUserByName(GetUserByNameRequest) returns (User) {}
 
-    rpc UpdateUser(UpdateUserByIdRequest) returns (User) {}
-    rpc UpdateUserByName(UpdateUserByNameRequest) returns (User) {}
+  rpc UpdateUser(UpdateUserByIdRequest) returns (User) {}
+  rpc UpdateUserByName(UpdateUserByNameRequest) returns (User) {}
 
-    rpc DeleteUser(DeleteUserByIdRequest) returns (google.protobuf.Empty) {}
-    rpc DeleteUserByName(DeleteUserByNameRequest) returns (google.protobuf.Empty) {}
+  rpc DeleteUser(DeleteUserByIdRequest) returns (google.protobuf.Empty) {}
+  rpc DeleteUserByName(DeleteUserByNameRequest) returns (google.protobuf.Empty) {}
 }
 
 message User {
-    string id = 1;
-    string username = 2;
-    bool is_admin = 3;
+  string id = 1;
+  string username = 2;
+  bool is_admin = 3;
 
-    google.protobuf.Timestamp created_at = 4;
-    google.protobuf.Timestamp updated_at = 5;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
 }
 
 message UserMutable {
-    optional string username = 1;
+  optional string username = 1;
 }
 
 message CreateUserRequest {
-    UserMutable data = 1;
+  UserMutable data = 1;
 }
 
 message GetUserByIdRequest {
-    string id = 1;
+  string id = 1;
 }
 
 message GetUserByNameRequest {
-    string username = 1;
+  string username = 1;
 }
 
 message UpdateUserByIdRequest {
-    string id = 1;
-    UserMutable data = 2;
+  string id = 1;
+  UserMutable data = 2;
 }
 
 message UpdateUserByNameRequest {
-    string username = 1;
-    UserMutable data = 2;
+  string username = 1;
+  UserMutable data = 2;
 }
 
 message DeleteUserByIdRequest {
-    string id = 1;
+  string id = 1;
 }
 
 message DeleteUserByNameRequest {
-    string username = 1;
+  string username = 1;
 }
 
 // Kafka Event Schema
 message UserEvent {
-    string type = 1;
-    User data = 2;
+  string type = 1;
+  User data = 2;
 }

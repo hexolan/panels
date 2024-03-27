@@ -1,3 +1,17 @@
+// Copyright 2023 Declan Teevan
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 syntax = "proto3";
 
 package panels.post.v1;
@@ -6,88 +20,86 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
 
 service PostService {
-    rpc CreatePost(CreatePostRequest) returns (Post) {}
+  rpc CreatePost(CreatePostRequest) returns (Post) {}
 
-    rpc GetPost(GetPostRequest) returns (Post) {}
-    rpc GetPanelPost(GetPanelPostRequest) returns (Post) {}
+  rpc GetPost(GetPostRequest) returns (Post) {}
+  rpc GetPanelPost(GetPanelPostRequest) returns (Post) {}
 
-    rpc UpdatePost(UpdatePostRequest) returns (Post) {}
+  rpc UpdatePost(UpdatePostRequest) returns (Post) {}
 
-    rpc DeletePost(DeletePostRequest) returns (google.protobuf.Empty) {}
+  rpc DeletePost(DeletePostRequest) returns (google.protobuf.Empty) {}
 
-    rpc GetFeedPosts(GetFeedPostsRequest) returns (FeedPosts) {}
-    rpc GetUserPosts(GetUserPostsRequest) returns (UserPosts) {}
-    rpc GetPanelPosts(GetPanelPostsRequest) returns (PanelPosts) {}
+  rpc GetFeedPosts(GetFeedPostsRequest) returns (FeedPosts) {}
+  rpc GetUserPosts(GetUserPostsRequest) returns (UserPosts) {}
+  rpc GetPanelPosts(GetPanelPostsRequest) returns (PanelPosts) {}
 }
 
 message Post {
-    string id = 1;
+  string id = 1;
 
-    string panel_id = 2; // External Ref: Panel Id
-    string author_id = 3; // External Ref: User Id
+  string panel_id = 2; // External Ref: Panel Id
+  string author_id = 3; // External Ref: User Id
 
-    string title = 4;
-    string content = 5;
+  string title = 4;
+  string content = 5;
 
-    google.protobuf.Timestamp created_at = 6;
-    google.protobuf.Timestamp updated_at = 7;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
 }
 
 message PostMutable {
-    optional string title = 1;
-    optional string content = 2;
+  optional string title = 1;
+  optional string content = 2;
 }
 
 message CreatePostRequest {
-    string panel_id = 1; // External Ref: Panel Id
-    string user_id = 2; // External Ref: User Id
-    PostMutable data = 3;
+  string panel_id = 1; // External Ref: Panel Id
+  string user_id = 2; // External Ref: User Id
+  PostMutable data = 3;
 }
 
 message GetPostRequest {
-    string id = 1;
+  string id = 1;
 }
 
 message GetPanelPostRequest {
-    string panel_id = 1; // External Ref: Panel Id
-    string id = 2;
+  string panel_id = 1; // External Ref: Panel Id
+  string id = 2;
 }
 
 message UpdatePostRequest {
-    string id = 1;
-    PostMutable data = 2;
+  string id = 1;
+  PostMutable data = 2;
 }
 
 message DeletePostRequest {
-    string id = 1;
+  string id = 1;
 }
 
-message GetFeedPostsRequest {
-
-}
+message GetFeedPostsRequest {}
 
 message FeedPosts {
-    repeated Post posts = 1;
+  repeated Post posts = 1;
 }
 
 message GetUserPostsRequest {
-    string user_id = 1; // External Ref: User Id
+  string user_id = 1; // External Ref: User Id
 }
 
 message UserPosts {
-    repeated Post posts = 1;
+  repeated Post posts = 1;
 }
 
 message GetPanelPostsRequest {
-    string panel_id = 1; // External Ref: Panel Id
+  string panel_id = 1; // External Ref: Panel Id
 }
 
 message PanelPosts {
-    repeated Post posts = 1;
+  repeated Post posts = 1;
 }
 
 // Kafka Event Schema
 message PostEvent {
-    string type = 1;
-    Post data = 2;
+  string type = 1;
+  Post data = 2;
 }
