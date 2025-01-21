@@ -10,7 +10,7 @@ authors = ["Declan Teevan <dt@hexolan.com>"]
 [tool.poetry.dependencies]
 python = "^3.9"
 grpcio = "^1.57.0"
-pydantic = "^2.3.0"
+pydantic = "^2.4.0"
 pydantic-settings = "^2.0.3"
 databases = {extras = ["asyncpg"], version = "^0.8.0"}
 grpcio-health-checking = "^1.57.0"
