@@ -20,7 +20,7 @@
     "@connectrpc/connect-fastify": "^0.13.2",
     "@connectrpc/protoc-gen-connect-es": "^0.13.2",
     "@types/mongoose-unique-validator": "^1.0.7",
-    "fastify": "^4.22.0",
+    "fastify": "^4.29.0",
     "kafkajs": "^2.2.4",
     "mongoose": "^7.5.0",
     "mongoose-unique-validator": "^4.0.0",
