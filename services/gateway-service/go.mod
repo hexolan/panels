@@ -8,7 +8,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	google.golang.org/grpc v1.57.1
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
-	google.golang.org/protobuf v1.31.0
+	google.golang.org/protobuf v1.33.0
 )
 
 require (
