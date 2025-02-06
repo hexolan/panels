@@ -22,7 +22,7 @@
     "@types/mongoose-unique-validator": "^1.0.7",
     "fastify": "^4.29.0",
     "kafkajs": "^2.2.4",
-    "mongoose": "^7.5.0",
+    "mongoose": "^7.8.6",
     "mongoose-unique-validator": "^4.0.0",
     "tsx": "^3.12.7",
     "typescript": "^5.2.2"
