@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/goccy/go-json v0.10.2
 	github.com/gofiber/fiber/v2 v2.52.5
-	github.com/golang-jwt/jwt/v5 v5.0.0
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	google.golang.org/grpc v1.57.1
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
 	google.golang.org/protobuf v1.33.0
