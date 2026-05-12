@@ -158,7 +158,7 @@ services:
 
   # Redis Instances
   panel-service-redis:
-    image: redis:7.2
+    image: redis:8.6
     restart: unless-stopped
     command: redis-server --requirepass redis --maxmemory 250mb --maxmemory-policy allkeys-lru
     ports:
@@ -167,7 +167,7 @@ services:
       - panel-service-network
 
   post-service-redis:
-    image: redis:7.2
+    image: redis:8.6
     restart: unless-stopped
     command: redis-server --requirepass redis --maxmemory 250mb --maxmemory-policy allkeys-lru
     ports:
@@ -176,7 +176,7 @@ services:
       - post-service-network
 
   comment-service-redis:
-    image: redis:7.2
+    image: redis:8.6
     restart: unless-stopped
     command: "redis-server --requirepass redis --maxmemory 250mb --maxmemory-policy allkeys-lru"
     ports:
