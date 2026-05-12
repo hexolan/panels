@@ -16,7 +16,7 @@
     "@mantine/core": "^6.0.19",
     "@mantine/form": "^6.0.20",
     "@mantine/hooks": "^6.0.19",
-    "@reduxjs/toolkit": "^1.9.5",
+    "@reduxjs/toolkit": "^2.0.0",
     "@tabler/icons-react": "^3.0.0",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
