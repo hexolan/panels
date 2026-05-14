@@ -17,12 +17,12 @@ const ExplorePanelsPage = () => {
       )}
       <Divider my='md' variant='dotted' />
 
-      <Stack spacing='sm' align='stretch'>
+      <Stack gap='sm' align='stretch'>
         <Paper shadow='xl' radius='md' p='md' withBorder component={Link} to='/panel/Panel'>
           <Group>
             <ThemeIcon color='teal' variant='light' size='xl'><IconMessages /></ThemeIcon>
             <Box>
-              <Text weight={600}>Panel</Text>
+              <Text fw={600}>Panel</Text>
               <Text>The first and therefore defacto primary panel.</Text>
               <Text color='dimmed' size='xs' mt={3}>Click to View</Text>
             </Box>
@@ -33,7 +33,7 @@ const ExplorePanelsPage = () => {
           <Group>
             <ThemeIcon color='red' variant='light' size='xl'><IconTableOff /></ThemeIcon>
             <Box>
-              <Text weight={600}>Note</Text>
+              <Text fw={600}>Note</Text>
               <Text>This page is exemplary as this feature is currently unimplemented.</Text>
               <Text color='dimmed' size='xs' mt={3}>Planned Functionality</Text>
             </Box>

@@ -51,7 +51,7 @@ const UpdatePanelForm = ({
 
   return (
     <form onSubmit={panelForm.onSubmit(submitUpdatePanel)}>
-      <Stack spacing='md'>
+      <Stack gap='md'>
         <TextInput label='Name' {...panelForm.getInputProps('name')} />
         <Textarea label='Description' {...panelForm.getInputProps('description')} />
 
@@ -90,7 +90,7 @@ function PanelSettingsPage() {
   return (
     <Paper mt='md' radius='lg' shadow='md' p='lg' withBorder>
       <Center>
-        <Group spacing='sm'>
+        <Group gap='sm'>
           {modifying 
             ? <Button color='teal' onClick={() => { setModifying(false); setErrorMsg('') }}>Stop Modifying</Button>
             : <Button color='teal' onClick={() => setModifying(true)}>Modify Panel</Button>

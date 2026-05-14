@@ -17,22 +17,22 @@ const ErrorPage = () => {
     <Center h='100%'>
       <Container>
         <Title
-          align='center'
-          weight={800}
-          sx={(theme) => ({
-            fontSize: rem(38),
-            [theme.fn.smallerThan('sm')]: {
-              fontSize: rem(32),
-            },
-          })}
+          ta='center'
+          fw={800}
+          // sx={(theme) => ({
+          //   fontSize: rem(38),
+          //   [theme.fn.smallerThan('sm')]: {
+          //     fontSize: rem(32),
+          //   },
+          // })}
         >
           {title}
         </Title>
-        <Text size='lg' color='dimmed' maw={rem(250)} align='center' my='xl'>
+        <Text size='lg' color='dimmed' maw={rem(250)} ta='center' my='xl'>
           {subTitle}
         </Text>
 
-        <Group position='center'>
+        <Group justify='center'>
           <Button component={Link} to='/' variant='subtle' size='md'>
             Back to Home
           </Button>

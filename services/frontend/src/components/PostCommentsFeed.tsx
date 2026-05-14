@@ -13,7 +13,7 @@ function PostCommentsFeed({ post }: { post: Post }) {
       </Center>
     )
   } else if (!data) {
-    return <Text color='red' align='center'>Failed to Load Comments</Text>
+    return <Text color='red' ta='center'>Failed to Load Comments</Text>
   } else if (!data.length) {
     return null
   }

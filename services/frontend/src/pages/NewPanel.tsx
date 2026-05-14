@@ -46,11 +46,11 @@ const NewPanelPage = () => {
   return (
     <Center h='95%'>
       <Container>
-        <Title align='center' weight={900}>Create a Panel</Title>
+        <Title ta='center' fw={900}>Create a Panel</Title>
 
         <Paper withBorder shadow='md' radius='md' p={30} mt={30}>
           <form onSubmit={panelForm.onSubmit(submitPanelForm)}>
-            <Stack spacing='md'>
+            <Stack gap='md'>
               <TextInput 
                 label='Name'
                 placeholder='e.g. music, programming, football'
@@ -63,7 +63,7 @@ const NewPanelPage = () => {
                 {...panelForm.getInputProps('description')}
               />
 
-              { errorMsg && <Text color='red' align='center'>{'Error: ' + errorMsg}</Text> }
+              { errorMsg && <Text color='red' ta='center'>{'Error: ' + errorMsg}</Text> }
 
               <Button type='submit' variant='outline' color='teal' disabled={isLoading} fullWidth>Create Panel</Button>
             </Stack>

@@ -53,7 +53,7 @@ function PanelPostPage() {
     <Box mb='lg'>
       <PagePost post={data} />
       <Divider my='md' variant='none' />
-      <Stack spacing='sm'>
+      <Stack gap='sm'>
         { currentUser && <CreateComment post={data} addNewComment={addNewComment} /> }
         { newComments.length > 0 && <CommentsFeed comments={newComments} /> }
         <PostCommentsFeed post={data} />

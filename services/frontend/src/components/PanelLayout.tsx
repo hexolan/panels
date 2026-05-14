@@ -24,13 +24,13 @@ const PanelLayoutComponent = ({ panel, setPanel }: { panel: Panel, setPanel: Rea
     <>
       <Paper py={rem(50)} shadow='md' sx={{ borderBottom: '1px' }}>
         <Container>
-          <Group position='apart'>
+          <Group gap='apart'>
             <Box component={Link} to={`/panel/${panel.name}`} style={{ textDecoration: 'none' }}>
               <Text size='lg' color='black'>{panel.name}</Text>
               <Text size='sm' color='dimmed'>{panel.description}</Text>
             </Box>
 
-            <Group spacing='sm'>
+            <Group gap='sm'>
               {currentUser && <Button size='xs' variant='filled' color='teal' component={Link} to={`/panel/${panel.name}/posts/new`}>Create Post</Button>}
               {currentUser && currentUser.isAdmin && <Button size='xs' variant='outline' color='green' component={Link} to={`/panel/${panel.name}/settings`}>Manage Panel</Button>}
             </Group>

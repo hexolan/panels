@@ -133,14 +133,14 @@ const PagePostItem = ({ post, setPost }: { post: Post, setPost: React.Dispatch<P
       )}
 
       {modifying ? <ModifyPostForm post={post} setModifying={setModifying} setPost={setPost} /> : (
-        <Stack align='flex-start' mt={2} spacing={1}>
-          <Text weight={600}>{post.title}</Text>
+        <Stack align='flex-start' mt={2} gap={1}>
+          <Text fw={600}>{post.title}</Text>
           <Text size='sm'>{post.content}</Text>
           <Text size='xs' color='dimmed' mt={3}>Created {post.createdAt}</Text>
         </Stack>
       )}
 
-      {errorMsg && <Text color='red' align='center' size='xs' mt='md'>{'Error: ' + errorMsg}</Text>}
+      {errorMsg && <Text color='red' ta='center' size='xs' mt='md'>{'Error: ' + errorMsg}</Text>}
     </Paper>
   )
 }

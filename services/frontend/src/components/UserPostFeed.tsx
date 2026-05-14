@@ -10,10 +10,10 @@ function UserPostFeed({ user }: { user: User }) {
   if (isLoading) {
     return <SkeletonPostFeed />
   } else if (!data) {
-    return <Text align='center' color='red'>Failed to Load Posts</Text>
+    return <Text ta='center' color='red'>Failed to Load Posts</Text>
   } else if (!data.length) {
     // Check that there are posts.
-    return <Text align='center'>No Posts Found!</Text>
+    return <Text ta='center'>No Posts Found!</Text>
   }
 
   return (

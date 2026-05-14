@@ -26,9 +26,9 @@ function AppHeader() {
           <Menu>
             <Menu.Target>
               <Button color='teal' variant='outline'>
-                <Group spacing={7}>
+                <Group gap={7}>
                   <Avatar color='teal' radius='xl' size={25} />
-                  <Text weight={500} size='sm' sx={{ lineHeight: 1 }} mr={3}>
+                  <Text fw={500} size='sm' mr={3}> {/* sx={{ lineHeight: 1 }} */}
                     {currentUser.username}
                   </Text>
                   <IconChevronDown size={20} />

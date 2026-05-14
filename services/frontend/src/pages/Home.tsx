@@ -7,7 +7,7 @@ const Homepage = () => {
     <Container mt='xl'>
       <Title>Feed</Title>
       <Divider my='md' variant='dotted' />
-      <Stack my='lg' spacing='md'>
+      <Stack my='lg' gap='md'>
         <HomePostFeed />
       </Stack>
     </Container>

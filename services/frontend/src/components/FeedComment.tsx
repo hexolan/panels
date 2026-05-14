@@ -12,7 +12,7 @@ import type { UpdateCommentData } from '../app/types/comments'
 
 const FeedCommentBase = ({ children, extraChildren }: { children: React.ReactNode, extraChildren?: React.ReactNode }) => (
   <Paper shadow='sm' radius='md' p='md' withBorder>
-    <Group w='100%' position='apart'>
+    <Group w='100%' justify='apart'>
       <Group>
         <ThemeIcon color='teal' variant='light' size='xl'><IconMessage /></ThemeIcon>
         {children}

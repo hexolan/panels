@@ -49,7 +49,7 @@ const NewPanelPostPage = () => {
   return (
     <Paper shadow='md' radius='md' p='lg' withBorder>
       <form onSubmit={createPostForm.onSubmit(submitPost)}>
-        <Stack spacing='md'>
+        <Stack gap='md'>
           <TextInput 
             label='Title'
             placeholder='Post Title'
@@ -62,7 +62,7 @@ const NewPanelPostPage = () => {
             {...createPostForm.getInputProps('content')}
           />
           
-          { errorMsg && <Text color='red' align='center'>{'Error: ' + errorMsg}</Text> }
+          { errorMsg && <Text color='red' ta='center'>{'Error: ' + errorMsg}</Text> }
 
           <Button type='submit' variant='outline' color='teal' disabled={isLoading} fullWidth>
             Create Post

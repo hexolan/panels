@@ -56,15 +56,15 @@ const SignUpPage = () => {
   return (
     <Center h='95%'>
       <Container>
-        <Title align='center' weight={900}>Sign Up</Title>
-        <Text color='dimmed' size='sm' align='center' mt={5}>
+        <Title ta='center' fw={900}>Sign Up</Title>
+        <Text color='dimmed' size='sm' ta='center' mt={5}>
           Already have an account?{' '}
           <Anchor size='sm' component={Link} to='/signin'>Sign in</Anchor> instead.
         </Text>
 
         <Paper withBorder shadow='md' radius='md' p={30} mt={30}>
           <form onSubmit={registrationForm.onSubmit(submitRegistrationForm)}>
-            <Stack spacing='md'>
+            <Stack gap='md'>
               <TextInput 
                 label='Username'
                 placeholder='Your username'
@@ -83,7 +83,7 @@ const SignUpPage = () => {
                 {...registrationForm.getInputProps('confPassword')}
               />
 
-              { errorMsg && <Text color='red' align='center'>{'Error: ' + errorMsg}</Text> }
+              { errorMsg && <Text color='red' ta='center'>{'Error: ' + errorMsg}</Text> }
 
               <Button type='submit' color='teal' disabled={isLoading} fullWidth>Register</Button>
             </Stack>

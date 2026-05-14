@@ -47,8 +47,8 @@ function SignInPage() {
   return (
     <Center h='95%'>
       <Container>
-        <Title align='center' weight={900}>Sign In</Title>
-        <Text color='dimmed' size='sm' align='center' mt={5}>
+        <Title ta='center' fw={900}>Sign In</Title>
+        <Text color='dimmed' size='sm' ta='center' mt={5}>
           Do not have an account yet?{' '}
           <Anchor size='sm' component={Link} to='/signup'>Sign up</Anchor> instead.
         </Text>
@@ -56,7 +56,7 @@ function SignInPage() {
 
         <Paper withBorder shadow='md' radius='md' p={30} mt={30}>
           <form onSubmit={loginForm.onSubmit(submitLoginForm)}>
-            <Stack spacing='md'>
+            <Stack gap='md'>
               <TextInput 
                 label='Username'
                 placeholder='Your username'
@@ -69,7 +69,7 @@ function SignInPage() {
                 {...loginForm.getInputProps('password')}
               />
 
-              { errorMsg && <Text color='red' align='center'>{'Error: ' + errorMsg}</Text> }
+              { errorMsg && <Text color='red' ta='center'>{'Error: ' + errorMsg}</Text> }
 
               <Button type='submit' color='teal' disabled={isLoading} fullWidth>Login</Button>
             </Stack>

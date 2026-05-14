@@ -36,7 +36,7 @@ function AppNavbar() {
   return (
     <Navbar width={{ base: 300 }} p='xs'>
       <Navbar.Section py='xs'>
-        <Text size='xs' color='dimmed' my='xs' weight={500}>Browse</Text>
+        <Text size='xs' color='dimmed' my='xs' fw={500}>Browse</Text>
         <NavbarButton text='Feed' page='/' icon={IconTrendingUp} />
         <NavbarButton text='Find Panels' page='/panels' icon={IconSearch} />
       </Navbar.Section>
@@ -48,7 +48,7 @@ function AppNavbar() {
           borderTop: `${rem(1)} solid ${theme.colors.gray[3]}`
         })}
       >
-        <Text size='xs' color='dimmed' m='xs' weight={500}>Suggested Panels</Text>
+        <Text size='xs' color='dimmed' m='xs' fw={500}>Suggested Panels</Text>
         <NavbarButton text='panel/Panel' page='/panel/Panel' icon={IconMessages} />
       </Navbar.Section>
     </Navbar>

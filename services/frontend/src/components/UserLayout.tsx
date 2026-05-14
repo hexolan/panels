@@ -61,7 +61,7 @@ function UserLayout() {
             <Paper w='100%'>
               <Box h='100%' pos='relative'>
                 <Center h='100%'>
-                  <Text weight={600} mr={3}>User:</Text>
+                  <Text fw={600} mr={3}>User:</Text>
                   <Text>{data.username}</Text>
                 </Center>
 

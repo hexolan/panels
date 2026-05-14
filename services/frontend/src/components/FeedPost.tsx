@@ -63,12 +63,12 @@ const FeedPost = ({ post, hidePanel, hideAuthor }: { post: Post, hidePanel?: boo
 
   return (
     <Paper shadow='xl' radius='lg' p='lg' withBorder>
-      <Group spacing='xs'>
+      <Group gap='xs'>
         {panelElement}
         {authorElement}
       </Group>
       <Box component={Link} to={panelData ? `/panel/${panelData.name}/post/${post.id}` : '#'} style={{ textDecoration: 'none', color: 'inherit' }}>
-        <Text mt={3} weight={600} lineClamp={1}>{post.title}</Text>
+        <Text mt={3} fw={600} lineClamp={1}>{post.title}</Text>
         <Text size='sm' lineClamp={2}>{post.content}</Text>
         <Text size='xs' color='dimmed' mt={3}>Click to View</Text>
       </Box>
