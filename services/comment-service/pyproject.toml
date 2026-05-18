@@ -15,7 +15,7 @@ pydantic-settings = "^2.0.3"
 databases = {extras = ["asyncpg"], version = "^0.8.0"}
 grpcio-health-checking = "^1.57.0"
 aiokafka = "^0.8.1"
-redis = "^5.0.0"
+redis = "^7.0.0"
 
 [tool.poetry.dev-dependencies]
 grpcio-tools = "^1.57.0"
