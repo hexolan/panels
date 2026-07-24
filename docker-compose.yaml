@@ -3,7 +3,7 @@ version: "3.8"
 services:
   # Kafka
   kafka:
-    image: bitnami/kafka:3.4
+    image: soldevelo/kafka:3.4
     restart: unless-stopped
     environment:
       - KAFKA_CFG_NODE_ID=0
